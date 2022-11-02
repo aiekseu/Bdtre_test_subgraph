@@ -1,0 +1,31 @@
+type Contr @entity {
+  id: ID!
+  ts: BigInt!
+  user: Bytes!
+  refadr: Bytes!
+  amount: BigInt!
+  referral: BigInt!
+  fund: BigInt!
+  lottery: BigInt!
+  marketing: BigInt!
+  toOwner: BigInt!
+  refund: BigInt!
+}
+
+type Off @entity {
+  id: ID!
+  ts: BigInt!
+  user: Bytes!
+  number: BigInt!
+  amount: BigInt!
+  price: BigInt!
+}
+
+type Lotter @entity {
+  id: ID!
+  ts: BigInt!
+  num: BigInt!
+  user: Bytes!
+  bank: BigInt!
+}
+
