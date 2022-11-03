@@ -1,31 +1,45 @@
-type Contr @entity {
+type Contribution @entity(immutable: true) {
   id: ID!
-  ts: BigInt!
+  timestamp: BigInt!
   user: Bytes!
-  refadr: Bytes!
+  referralAddress: Bytes!
   amount: BigInt!
-  referral: BigInt!
-  fund: BigInt!
-  lottery: BigInt!
-  marketing: BigInt!
+  toReferral: BigInt!
+  toFund: BigInt!
+  toLottery: BigInt!
+  toMarketing: BigInt!
   toOwner: BigInt!
-  refund: BigInt!
+  discount: BigInt!
 }
 
-type Off @entity {
+type Refund @entity(immutable: true) {
   id: ID!
-  ts: BigInt!
+  timestamp: BigInt!
   user: Bytes!
+  bidNumber: BigInt!
+  amountRefunded: BigInt!
+  fromBank: BigInt!
+}
+
+type Lottery @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
   number: BigInt!
-  amount: BigInt!
-  price: BigInt!
+  winner: Bytes!
+  bank: BigInt!
 }
 
-type Lotter @entity {
-  id: ID!
-  ts: BigInt!
-  num: BigInt!
-  user: Bytes!
-  bank: BigInt!
+type FutureLottery @entity {
+    id: ID!
+    participants: [LotteryParticipant!]! @derivedFrom(field: "lottery")
+    participantIds: [Bytes!]!
+    bank: BigInt!
+}
+
+type LotteryParticipant @entity {
+    id: Bytes!
+    address: Bytes!
+    contributed: BigInt!
+    lottery: FutureLottery!
 }
 
