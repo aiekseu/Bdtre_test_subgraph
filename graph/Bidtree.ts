@@ -1,6 +1,7 @@
 import { Contributed, Lottery, Offset } from '../generated/Bidtree/Bidtree'
 import * as schema from '../generated/schema'
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+
 
 const zeroAddress = '0x0000000000000000000000000000000000000000'
 // note: objects don't exist here
@@ -124,6 +125,44 @@ export function handleContributed(event: Contributed): void {
             }
         }
     }
+
+    // increase KPIs
+    let kpi = schema.KPI.load('kpi')
+    if (kpi === null) {
+        kpi = new schema.KPI('kpi')
+        kpi.usersIds = [event.params.user]
+        kpi.totalUsers = BigInt.fromI32(1)
+        kpi.totalContributed = event.params.amount
+        kpi.totalActualContributed = actualContributed
+        kpi.totalEarned = event.params.referral
+        kpi.totalLottery = event.params.lottery
+        kpi.totalToOwner = event.params.toOwner
+        kpi.totalToMarketing = event.params.marketing
+        kpi.totalToFund = event.params.fund
+        kpi.totalFromFund = BigInt.zero()
+        kpi.totalRefunded = BigInt.zero()
+        kpi.totalWon = BigInt.zero()
+        kpi.save()
+    } else {
+        let userIds = kpi.usersIds
+        if (userIds.indexOf(event.params.user) === -1) {
+            userIds.push(event.params.user)
+            kpi.usersIds = userIds
+            kpi.totalUsers = kpi.totalUsers.plus(BigInt.fromI32(1))
+        }
+
+        kpi.totalContributed = kpi.totalContributed.plus(event.params.amount)
+        kpi.totalActualContributed = kpi.totalActualContributed.plus(actualContributed)
+
+        if (event.params.refadr !== Address.fromString(zeroAddress)) {
+            kpi.totalEarned = kpi.totalEarned.plus(event.params.referral)
+        }
+        kpi.totalLottery = kpi.totalLottery.plus(event.params.lottery)
+        kpi.totalToOwner = kpi.totalToOwner.plus(event.params.toOwner)
+        kpi.totalToMarketing = kpi.totalToMarketing.plus(event.params.marketing)
+        kpi.totalToFund = kpi.totalToFund.plus(event.params.fund)
+        kpi.save()
+    }
 }
 
 export function handleOffset(event: Offset): void {
@@ -134,6 +173,13 @@ export function handleOffset(event: Offset): void {
     offset.amountRefunded = event.params.amount
     offset.fromBank = event.params.price
     offset.save()
+
+    let kpi = schema.KPI.load('kpi')
+    if (kpi !== null) {
+        kpi.totalFromFund = kpi.totalFromFund.plus(event.params.price)
+        kpi.totalRefunded = kpi.totalRefunded.plus(event.params.amount)
+        kpi.save()
+    }
 }
 
 export function handleLottery(event: Lottery): void {
@@ -159,8 +205,13 @@ export function handleLottery(event: Lottery): void {
                 user.save()
             }
         }
-
         futureLottery.save()
+    }
+
+    let kpi = schema.KPI.load('kpi')
+    if (kpi !== null) {
+        kpi.totalWon = kpi.totalWon.plus(event.params.bank)
+        kpi.save()
     }
 }
 

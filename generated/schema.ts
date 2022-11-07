@@ -487,3 +487,143 @@ export class User extends Entity {
     this.set("bidsIds", Value.fromBytesArray(value));
   }
 }
+
+export class KPI extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save KPI entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type KPI must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("KPI", id.toString(), this);
+    }
+  }
+
+  static load(id: string): KPI | null {
+    return changetype<KPI | null>(store.get("KPI", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get usersIds(): Array<Bytes> {
+    let value = this.get("usersIds");
+    return value!.toBytesArray();
+  }
+
+  set usersIds(value: Array<Bytes>) {
+    this.set("usersIds", Value.fromBytesArray(value));
+  }
+
+  get totalUsers(): BigInt {
+    let value = this.get("totalUsers");
+    return value!.toBigInt();
+  }
+
+  set totalUsers(value: BigInt) {
+    this.set("totalUsers", Value.fromBigInt(value));
+  }
+
+  get totalContributed(): BigInt {
+    let value = this.get("totalContributed");
+    return value!.toBigInt();
+  }
+
+  set totalContributed(value: BigInt) {
+    this.set("totalContributed", Value.fromBigInt(value));
+  }
+
+  get totalActualContributed(): BigInt {
+    let value = this.get("totalActualContributed");
+    return value!.toBigInt();
+  }
+
+  set totalActualContributed(value: BigInt) {
+    this.set("totalActualContributed", Value.fromBigInt(value));
+  }
+
+  get totalEarned(): BigInt {
+    let value = this.get("totalEarned");
+    return value!.toBigInt();
+  }
+
+  set totalEarned(value: BigInt) {
+    this.set("totalEarned", Value.fromBigInt(value));
+  }
+
+  get totalLottery(): BigInt {
+    let value = this.get("totalLottery");
+    return value!.toBigInt();
+  }
+
+  set totalLottery(value: BigInt) {
+    this.set("totalLottery", Value.fromBigInt(value));
+  }
+
+  get totalWon(): BigInt {
+    let value = this.get("totalWon");
+    return value!.toBigInt();
+  }
+
+  set totalWon(value: BigInt) {
+    this.set("totalWon", Value.fromBigInt(value));
+  }
+
+  get totalToOwner(): BigInt {
+    let value = this.get("totalToOwner");
+    return value!.toBigInt();
+  }
+
+  set totalToOwner(value: BigInt) {
+    this.set("totalToOwner", Value.fromBigInt(value));
+  }
+
+  get totalToMarketing(): BigInt {
+    let value = this.get("totalToMarketing");
+    return value!.toBigInt();
+  }
+
+  set totalToMarketing(value: BigInt) {
+    this.set("totalToMarketing", Value.fromBigInt(value));
+  }
+
+  get totalToFund(): BigInt {
+    let value = this.get("totalToFund");
+    return value!.toBigInt();
+  }
+
+  set totalToFund(value: BigInt) {
+    this.set("totalToFund", Value.fromBigInt(value));
+  }
+
+  get totalFromFund(): BigInt {
+    let value = this.get("totalFromFund");
+    return value!.toBigInt();
+  }
+
+  set totalFromFund(value: BigInt) {
+    this.set("totalFromFund", Value.fromBigInt(value));
+  }
+
+  get totalRefunded(): BigInt {
+    let value = this.get("totalRefunded");
+    return value!.toBigInt();
+  }
+
+  set totalRefunded(value: BigInt) {
+    this.set("totalRefunded", Value.fromBigInt(value));
+  }
+}

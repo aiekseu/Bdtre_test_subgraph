@@ -53,3 +53,18 @@ type User @entity {
     bidsIds: [Bytes!]!
 }
 
+type KPI @entity {
+    id: ID!
+    usersIds: [Bytes!]!
+    totalUsers: BigInt!
+    totalContributed: BigInt!
+    totalActualContributed: BigInt!
+    totalEarned: BigInt!
+    totalLottery: BigInt!
+    totalWon: BigInt!
+    totalToOwner: BigInt!
+    totalToMarketing: BigInt!
+    totalToFund: BigInt!
+    totalFromFund: BigInt!
+    totalRefunded: BigInt!
+}
