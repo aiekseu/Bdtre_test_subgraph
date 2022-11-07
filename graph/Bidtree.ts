@@ -15,7 +15,7 @@ const calculateLinks = (cost: number): BigInt => {
     else if (cost === 25500) return BigInt.fromString('256')
     else if (cost === 51100) return BigInt.fromString('512')
     else if (cost === 102300) return BigInt.fromString('1024')
-    else return BigInt.fromString('999999999999')
+    else return BigInt.fromString('2')
 }
 
 const calculateActualContribution = (cost: number): BigInt => {
@@ -29,7 +29,7 @@ const calculateActualContribution = (cost: number): BigInt => {
     else if (cost === 25500) return BigInt.fromString('6450000000000000000000')
     else if (cost === 51100) return BigInt.fromString('12850000000000000000000')
     else if (cost === 102300) return BigInt.fromString('25650000000000000000000')
-    else return BigInt.fromString('1488')
+    else return BigInt.fromString('100000000000000000000')
 }
 
 export function handleContributed(event: Contributed): void {
