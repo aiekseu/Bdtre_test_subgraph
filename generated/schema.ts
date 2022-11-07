@@ -131,6 +131,15 @@ export class Contribution extends Entity {
   set discount(value: BigInt) {
     this.set("discount", Value.fromBigInt(value));
   }
+
+  get links(): BigInt {
+    let value = this.get("links");
+    return value!.toBigInt();
+  }
+
+  set links(value: BigInt) {
+    this.set("links", Value.fromBigInt(value));
+  }
 }
 
 export class Refund extends Entity {
@@ -337,7 +346,7 @@ export class FutureLottery extends Entity {
   }
 }
 
-export class LotteryParticipant extends Entity {
+export class User extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -345,20 +354,18 @@ export class LotteryParticipant extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save LotteryParticipant entity without an ID");
+    assert(id != null, "Cannot save User entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type LotteryParticipant must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type User must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("LotteryParticipant", id.toBytes().toHexString(), this);
+      store.set("User", id.toBytes().toHexString(), this);
     }
   }
 
-  static load(id: Bytes): LotteryParticipant | null {
-    return changetype<LotteryParticipant | null>(
-      store.get("LotteryParticipant", id.toHexString())
-    );
+  static load(id: Bytes): User | null {
+    return changetype<User | null>(store.get("User", id.toHexString()));
   }
 
   get id(): Bytes {
@@ -379,6 +386,24 @@ export class LotteryParticipant extends Entity {
     this.set("address", Value.fromBytes(value));
   }
 
+  get lottery(): string {
+    let value = this.get("lottery");
+    return value!.toString();
+  }
+
+  set lottery(value: string) {
+    this.set("lottery", Value.fromString(value));
+  }
+
+  get contributedToCurrentLottery(): BigInt {
+    let value = this.get("contributedToCurrentLottery");
+    return value!.toBigInt();
+  }
+
+  set contributedToCurrentLottery(value: BigInt) {
+    this.set("contributedToCurrentLottery", Value.fromBigInt(value));
+  }
+
   get contributed(): BigInt {
     let value = this.get("contributed");
     return value!.toBigInt();
@@ -388,12 +413,39 @@ export class LotteryParticipant extends Entity {
     this.set("contributed", Value.fromBigInt(value));
   }
 
-  get lottery(): string {
-    let value = this.get("lottery");
-    return value!.toString();
+  get actualContributed(): BigInt {
+    let value = this.get("actualContributed");
+    return value!.toBigInt();
   }
 
-  set lottery(value: string) {
-    this.set("lottery", Value.fromString(value));
+  set actualContributed(value: BigInt) {
+    this.set("actualContributed", Value.fromBigInt(value));
+  }
+
+  get earned(): BigInt {
+    let value = this.get("earned");
+    return value!.toBigInt();
+  }
+
+  set earned(value: BigInt) {
+    this.set("earned", Value.fromBigInt(value));
+  }
+
+  get linksCreated(): BigInt {
+    let value = this.get("linksCreated");
+    return value!.toBigInt();
+  }
+
+  set linksCreated(value: BigInt) {
+    this.set("linksCreated", Value.fromBigInt(value));
+  }
+
+  get openLinks(): BigInt {
+    let value = this.get("openLinks");
+    return value!.toBigInt();
+  }
+
+  set openLinks(value: BigInt) {
+    this.set("openLinks", Value.fromBigInt(value));
   }
 }
