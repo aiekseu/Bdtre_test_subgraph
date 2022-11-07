@@ -4,6 +4,7 @@ import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 
 const zeroAddress = '0x0000000000000000000000000000000000000000'
 // note: objects don't exist here
+// formula doesn't work either
 const calculateLinks = (cost: number): BigInt => {
     if (cost === 100) return BigInt.fromString('2')
     else if (cost === 300) return BigInt.fromString('4')
@@ -36,18 +37,20 @@ export function handleContributed(event: Contributed): void {
     const costInUsd = parseInt(event.params.amount.toString().slice(0, -18))
     const links = calculateLinks(costInUsd)
 
-    let contribute = new schema.Contribution(event.transaction.hash.toHex())
+    let contribute = new schema.Contribution(event.transaction.hash)
     contribute.timestamp = event.block.timestamp
     contribute.user = event.params.user
     contribute.referralAddress = event.params.refadr
     contribute.amount = event.params.amount
-    contribute.links = links
+    contribute.links = links as BigInt
+    contribute.linksLeft = links as BigInt
     contribute.toReferral = event.params.referral
     contribute.toFund = event.params.fund
     contribute.toLottery = event.params.lottery
     contribute.toMarketing = event.params.marketing
     contribute.toOwner = event.params.toOwner
     contribute.discount = event.params.refund
+    contribute.contributor = event.params.user
     contribute.save()
 
     // get future lottery instance
@@ -84,6 +87,7 @@ export function handleContributed(event: Contributed): void {
         user.openLinks = links
         user.linksCreated = links
         user.earned = BigInt.zero()
+        user.bidsIds = [event.transaction.hash]
         user.save()
     } else {
         user.contributedToCurrentLottery = event.params.lottery.plus(user.contributedToCurrentLottery)
@@ -91,16 +95,33 @@ export function handleContributed(event: Contributed): void {
         user.actualContributed = user.actualContributed.plus(actualContributed)
         user.openLinks = user.openLinks.plus(links)
         user.linksCreated = user.linksCreated.plus(links)
+
+        let usersBids = user.bidsIds
+        usersBids.push(event.transaction.hash)
+        user.bidsIds = usersBids
         user.save()
     }
 
-    // decrease referral open links
+    // get referral if exists
     if (event.params.refadr !== Address.fromString(zeroAddress)) {
         let referral = schema.User.load(event.params.refadr)
+        // if there is referral
         if (referral !== null) {
+            // increase earnings and decrease openLinks
             referral.openLinks = referral.openLinks.minus(BigInt.fromI32(1))
             referral.earned = referral.earned.plus(event.params.referral)
             referral.save()
+
+            // get referral bid
+            let refBidsIds = referral.bidsIds
+            for (let i = 0; i < refBidsIds.length; i++) {
+                const bid = schema.Contribution.load(refBidsIds[i])
+                if (bid !== null && bid.linksLeft > BigInt.zero()) {
+                    bid.linksLeft = bid.linksLeft.minus(BigInt.fromI32(1))
+                    bid.save()
+                    return
+                }
+            }
         }
     }
 }

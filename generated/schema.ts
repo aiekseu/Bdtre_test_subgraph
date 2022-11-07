@@ -12,9 +12,9 @@ import {
 } from "@graphprotocol/graph-ts";
 
 export class Contribution extends Entity {
-  constructor(id: string) {
+  constructor(id: Bytes) {
     super();
-    this.set("id", Value.fromString(id));
+    this.set("id", Value.fromBytes(id));
   }
 
   save(): void {
@@ -22,24 +22,26 @@ export class Contribution extends Entity {
     assert(id != null, "Cannot save Contribution entity without an ID");
     if (id) {
       assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Contribution must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        id.kind == ValueKind.BYTES,
+        `Entities of type Contribution must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Contribution", id.toString(), this);
+      store.set("Contribution", id.toBytes().toHexString(), this);
     }
   }
 
-  static load(id: string): Contribution | null {
-    return changetype<Contribution | null>(store.get("Contribution", id));
+  static load(id: Bytes): Contribution | null {
+    return changetype<Contribution | null>(
+      store.get("Contribution", id.toHexString())
+    );
   }
 
-  get id(): string {
+  get id(): Bytes {
     let value = this.get("id");
-    return value!.toString();
+    return value!.toBytes();
   }
 
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
   }
 
   get timestamp(): BigInt {
@@ -58,6 +60,15 @@ export class Contribution extends Entity {
 
   set user(value: Bytes) {
     this.set("user", Value.fromBytes(value));
+  }
+
+  get contributor(): Bytes {
+    let value = this.get("contributor");
+    return value!.toBytes();
+  }
+
+  set contributor(value: Bytes) {
+    this.set("contributor", Value.fromBytes(value));
   }
 
   get referralAddress(): Bytes {
@@ -139,6 +150,15 @@ export class Contribution extends Entity {
 
   set links(value: BigInt) {
     this.set("links", Value.fromBigInt(value));
+  }
+
+  get linksLeft(): BigInt {
+    let value = this.get("linksLeft");
+    return value!.toBigInt();
+  }
+
+  set linksLeft(value: BigInt) {
+    this.set("linksLeft", Value.fromBigInt(value));
   }
 }
 
@@ -447,5 +467,23 @@ export class User extends Entity {
 
   set openLinks(value: BigInt) {
     this.set("openLinks", Value.fromBigInt(value));
+  }
+
+  get bids(): Array<Bytes> {
+    let value = this.get("bids");
+    return value!.toBytesArray();
+  }
+
+  set bids(value: Array<Bytes>) {
+    this.set("bids", Value.fromBytesArray(value));
+  }
+
+  get bidsIds(): Array<Bytes> {
+    let value = this.get("bidsIds");
+    return value!.toBytesArray();
+  }
+
+  set bidsIds(value: Array<Bytes>) {
+    this.set("bidsIds", Value.fromBytesArray(value));
   }
 }

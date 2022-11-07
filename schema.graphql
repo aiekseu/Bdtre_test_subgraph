@@ -1,7 +1,8 @@
-type Contribution @entity(immutable: true) {
-  id: ID!
+type Contribution @entity {
+  id: Bytes!
   timestamp: BigInt!
   user: Bytes!
+  contributor: User!
   referralAddress: Bytes!
   amount: BigInt!
   toReferral: BigInt!
@@ -11,6 +12,7 @@ type Contribution @entity(immutable: true) {
   toOwner: BigInt!
   discount: BigInt!
   links: BigInt!
+  linksLeft: BigInt!
 }
 
 type Refund @entity(immutable: true) {
@@ -47,5 +49,7 @@ type User @entity {
     earned: BigInt!
     linksCreated: BigInt!
     openLinks: BigInt!
+    bids: [Contribution!]! @derivedFrom(field: "contributor")
+    bidsIds: [Bytes!]!
 }
 
