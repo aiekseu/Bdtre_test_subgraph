@@ -160,6 +160,15 @@ export class Contribution extends Entity {
   set linksLeft(value: BigInt) {
     this.set("linksLeft", Value.fromBigInt(value));
   }
+
+  get refunded(): boolean {
+    let value = this.get("refunded");
+    return value!.toBoolean();
+  }
+
+  set refunded(value: boolean) {
+    this.set("refunded", Value.fromBoolean(value));
+  }
 }
 
 export class Refund extends Entity {
@@ -218,6 +227,15 @@ export class Refund extends Entity {
 
   set bidNumber(value: BigInt) {
     this.set("bidNumber", Value.fromBigInt(value));
+  }
+
+  get bidId(): Bytes {
+    let value = this.get("bidId");
+    return value!.toBytes();
+  }
+
+  set bidId(value: Bytes) {
+    this.set("bidId", Value.fromBytes(value));
   }
 
   get amountRefunded(): BigInt {

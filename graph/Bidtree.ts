@@ -1,6 +1,6 @@
 import { Contributed, Lottery, Offset } from '../generated/Bidtree/Bidtree'
 import * as schema from '../generated/schema'
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 
 
 const zeroAddress = '0x0000000000000000000000000000000000000000'
@@ -23,6 +23,7 @@ export function handleContributed(event: Contributed): void {
     contribute.toOwner = event.params.toOwner
     contribute.discount = event.params.refund
     contribute.contributor = event.params.user
+    contribute.refunded = false
     contribute.save()
 
     // get future lottery instance
@@ -141,7 +142,6 @@ export function handleOffset(event: Offset): void {
     offset.bidNumber = event.params.number
     offset.amountRefunded = event.params.amount
     offset.fromBank = event.params.price
-    offset.save()
 
     let kpi = schema.KPI.load('kpi')
     if (kpi !== null) {
@@ -149,6 +149,22 @@ export function handleOffset(event: Offset): void {
         kpi.totalRefunded = kpi.totalRefunded.plus(event.params.amount)
         kpi.save()
     }
+
+    let user = schema.User.load(event.params.user)
+    if (user !== null) {
+        let bidId = user.bidsIds[event.params.number.toI32()]
+        if (bidId) {
+            offset.bidId = bidId
+        } else {
+            offset.bidId = Bytes.empty()
+        }
+        let bid = schema.Contribution.load(bidId)
+        if (bid !== null) {
+            bid.refunded = true
+            bid.save()
+        }
+    }
+    offset.save()
 }
 
 export function handleLottery(event: Lottery): void {
