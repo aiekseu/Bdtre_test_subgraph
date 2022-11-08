@@ -7,7 +7,7 @@ const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 export function handleContributed(event: Contributed): void {
     const links = event.params.amount.div(BigInt.fromString('100000000000000000000')).plus(BigInt.fromI32(1))
-    const actualContributed = event.params.amount.div(BigInt.fromI32(4)).plus(BigInt.fromI32(75))
+    const actualContributed = event.params.amount.div(BigInt.fromI32(4)).plus(BigInt.fromString('75000000000000000000'))
 
     let contribute = new schema.Contribution(event.transaction.hash)
     contribute.timestamp = event.block.timestamp
