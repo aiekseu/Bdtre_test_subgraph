@@ -4,39 +4,10 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 
 const zeroAddress = '0x0000000000000000000000000000000000000000'
-// note: objects don't exist here
-// formula doesn't work either
-const calculateLinks = (cost: number): BigInt => {
-    if (cost === 100) return BigInt.fromString('2')
-    else if (cost === 300) return BigInt.fromString('4')
-    else if (cost === 700) return BigInt.fromString('8')
-    else if (cost === 1500) return BigInt.fromString('16')
-    else if (cost === 3100) return BigInt.fromString('32')
-    else if (cost === 6300) return BigInt.fromString('64')
-    else if (cost === 12700) return BigInt.fromString('128')
-    else if (cost === 25500) return BigInt.fromString('256')
-    else if (cost === 51100) return BigInt.fromString('512')
-    else if (cost === 102300) return BigInt.fromString('1024')
-    else return BigInt.fromString('2')
-}
-
-const calculateActualContribution = (cost: number): BigInt => {
-    if (cost === 100) return BigInt.fromString('100000000000000000000')
-    else if (cost === 300) return BigInt.fromString('150000000000000000000')
-    else if (cost === 700) return BigInt.fromString('250000000000000000000')
-    else if (cost === 1500) return BigInt.fromString('450000000000000000000')
-    else if (cost === 3100) return BigInt.fromString('850000000000000000000')
-    else if (cost === 6300) return BigInt.fromString('1650000000000000000000')
-    else if (cost === 12700) return BigInt.fromString('3250000000000000000000')
-    else if (cost === 25500) return BigInt.fromString('6450000000000000000000')
-    else if (cost === 51100) return BigInt.fromString('12850000000000000000000')
-    else if (cost === 102300) return BigInt.fromString('25650000000000000000000')
-    else return BigInt.fromString('100000000000000000000')
-}
 
 export function handleContributed(event: Contributed): void {
-    const costInUsd = parseInt(event.params.amount.toString().slice(0, -18))
-    const links = calculateLinks(costInUsd)
+    const links = event.params.amount.div(BigInt.fromString('100000000000000000000')).plus(BigInt.fromI32(1))
+    const actualContributed = event.params.amount.div(BigInt.fromI32(4)).plus(BigInt.fromI32(75))
 
     let contribute = new schema.Contribution(event.transaction.hash)
     contribute.timestamp = event.block.timestamp
@@ -69,8 +40,6 @@ export function handleContributed(event: Contributed): void {
         lottery.participantIds = pIDs
     }
     lottery.save()
-
-    const actualContributed = calculateActualContribution(costInUsd)
 
     // add new user or incresase contributed if already participated
     let user = schema.User.load(event.params.user)
@@ -126,7 +95,7 @@ export function handleContributed(event: Contributed): void {
         }
     }
 
-    // increase KPIs
+    // increase KPIs or initialize
     let kpi = schema.KPI.load('kpi')
     if (kpi === null) {
         kpi = new schema.KPI('kpi')
