@@ -2,7 +2,6 @@ import { Contributed, Lottery, Offset } from '../generated/Bidtree/Bidtree'
 import * as schema from '../generated/schema'
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 
-
 const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 export function handleContributed(event: Contributed): void {
@@ -35,7 +34,7 @@ export function handleContributed(event: Contributed): void {
         lottery.bank = event.params.lottery
         lottery.participantIds = [event.params.user]
     } else {
-        lottery.bank = event.params.lottery.plus(lottery.bank)
+        lottery.bank = lottery.bank.plus(event.params.lottery)
         let pIDs = lottery.participantIds
         pIDs.push(event.params.user)
         lottery.participantIds = pIDs
@@ -61,7 +60,7 @@ export function handleContributed(event: Contributed): void {
         user.bidsIds = [event.transaction.hash]
         user.save()
     } else {
-        user.contributedToCurrentLottery = event.params.lottery.plus(user.contributedToCurrentLottery)
+        user.contributedToCurrentLottery = user.contributedToCurrentLottery.plus(event.params.lottery)
         user.contributed = user.contributed.plus(event.params.amount)
         user.actualContributed = user.actualContributed.plus(actualContributed)
         user.openLinks = user.openLinks.plus(links)
@@ -176,12 +175,10 @@ export function handleLottery(event: Lottery): void {
     lottery.save()
 
     // set future lottery bank to 0
-    // clear array of participants
-    // delete all LotteryParticipant entities
+    // set participants' contributedToCurrentLottery to 0
     let futureLottery = schema.FutureLottery.load('future-lottery')
     if (futureLottery) {
         futureLottery.bank = BigInt.zero()
-        futureLottery.participantIds = []
         let users = futureLottery.participantIds
         for (let i = 0; i < users.length; i++) {
             let user = schema.User.load(users[i])
