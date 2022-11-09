@@ -382,6 +382,15 @@ export class FutureLottery extends Entity {
   set bank(value: BigInt) {
     this.set("bank", Value.fromBigInt(value));
   }
+
+  get linksBank(): BigInt {
+    let value = this.get("linksBank");
+    return value!.toBigInt();
+  }
+
+  set linksBank(value: BigInt) {
+    this.set("linksBank", Value.fromBigInt(value));
+  }
 }
 
 export class User extends Entity {
@@ -440,6 +449,15 @@ export class User extends Entity {
 
   set contributedToCurrentLottery(value: BigInt) {
     this.set("contributedToCurrentLottery", Value.fromBigInt(value));
+  }
+
+  get linksToCurrentLottery(): BigInt {
+    let value = this.get("linksToCurrentLottery");
+    return value!.toBigInt();
+  }
+
+  set linksToCurrentLottery(value: BigInt) {
+    this.set("linksToCurrentLottery", Value.fromBigInt(value));
   }
 
   get contributed(): BigInt {

@@ -39,6 +39,7 @@ type FutureLottery @entity {
     participants: [User!]! @derivedFrom(field: "lottery")
     participantIds: [Bytes!]!
     bank: BigInt!
+    linksBank: BigInt!
 }
 
 type User @entity {
@@ -46,6 +47,7 @@ type User @entity {
     address: Bytes!
     lottery: FutureLottery!
     contributedToCurrentLottery: BigInt!
+    linksToCurrentLottery: BigInt!
     contributed: BigInt!
     actualContributed: BigInt!
     earned: BigInt!

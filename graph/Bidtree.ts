@@ -32,9 +32,11 @@ export function handleContributed(event: Contributed): void {
     if (lottery === null) {
         lottery = new schema.FutureLottery('future-lottery')
         lottery.bank = event.params.lottery
+        lottery.linksBank = links
         lottery.participantIds = [event.params.user]
     } else {
         lottery.bank = lottery.bank.plus(event.params.lottery)
+        lottery.linksBank = lottery.linksBank.plus(links)
         let pIDs = lottery.participantIds
         pIDs.push(event.params.user)
         lottery.participantIds = pIDs
@@ -49,6 +51,7 @@ export function handleContributed(event: Contributed): void {
         // info about lottery
         user.address = event.params.user
         user.contributedToCurrentLottery = event.params.lottery
+        user.linksToCurrentLottery = links
         user.lottery = 'future-lottery'
 
         // info about user
@@ -61,6 +64,7 @@ export function handleContributed(event: Contributed): void {
         user.save()
     } else {
         user.contributedToCurrentLottery = user.contributedToCurrentLottery.plus(event.params.lottery)
+        user.linksToCurrentLottery = user.linksToCurrentLottery.plus(links)
         user.contributed = user.contributed.plus(event.params.amount)
         user.actualContributed = user.actualContributed.plus(actualContributed)
         user.openLinks = user.openLinks.plus(links)
@@ -179,11 +183,13 @@ export function handleLottery(event: Lottery): void {
     let futureLottery = schema.FutureLottery.load('future-lottery')
     if (futureLottery) {
         futureLottery.bank = BigInt.zero()
+        futureLottery.linksBank = BigInt.zero()
         let users = futureLottery.participantIds
         for (let i = 0; i < users.length; i++) {
             let user = schema.User.load(users[i])
             if (user) {
                 user.contributedToCurrentLottery = BigInt.zero()
+                user.linksToCurrentLottery = BigInt.zero()
                 user.save()
             }
         }
