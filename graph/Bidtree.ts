@@ -2,8 +2,6 @@ import { Contributed, Lottery, Offset } from '../generated/Bidtree/Bidtree'
 import * as schema from '../generated/schema'
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 
-const zeroAddress = '0x0000000000000000000000000000000000000000'
-
 export function handleContributed(event: Contributed): void {
     const links = event.params.amount.div(BigInt.fromString('100000000000000000000')).plus(BigInt.fromI32(1))
     const actualContributed = event.params.amount.div(BigInt.fromI32(4)).plus(BigInt.fromString('75000000000000000000'))
@@ -29,7 +27,7 @@ export function handleContributed(event: Contributed): void {
     let lottery = schema.FutureLottery.load('future-lottery')
 
     // increase lottery bank and add user as participant
-    if (lottery === null) {
+    if (lottery == null) {
         lottery = new schema.FutureLottery('future-lottery')
         lottery.bank = event.params.lottery
         lottery.linksBank = links
@@ -45,7 +43,7 @@ export function handleContributed(event: Contributed): void {
 
     // add new user or incresase contributed if already participated
     let user = schema.User.load(event.params.user)
-    if (user === null) {
+    if (user == null) {
         let user = new schema.User(event.params.user)
 
         // info about lottery
@@ -77,10 +75,10 @@ export function handleContributed(event: Contributed): void {
     }
 
     // get referral if exists
-    if (event.params.refadr !== Address.fromString(zeroAddress)) {
+    if (event.params.refadr.notEqual(Address.zero())) {
         let referral = schema.User.load(event.params.refadr)
         // if there is referral
-        if (referral !== null) {
+        if (referral != null) {
             // increase earnings and decrease openLinks
             referral.openLinks = referral.openLinks.minus(BigInt.fromI32(1))
             referral.earned = referral.earned.plus(event.params.referral)
@@ -90,10 +88,10 @@ export function handleContributed(event: Contributed): void {
             let refBidsIds = referral.bidsIds
             for (let i = 0; i < refBidsIds.length; i++) {
                 const bid = schema.Contribution.load(refBidsIds[i])
-                if (bid !== null && bid.linksLeft > BigInt.zero()) {
+                if (bid != null && bid.linksLeft > BigInt.zero()) {
                     bid.linksLeft = bid.linksLeft.minus(BigInt.fromI32(1))
                     bid.save()
-                    return
+                    break
                 }
             }
         }
@@ -101,13 +99,13 @@ export function handleContributed(event: Contributed): void {
 
     // increase KPIs or initialize
     let kpi = schema.KPI.load('kpi')
-    if (kpi === null) {
+    if (kpi == null) {
         kpi = new schema.KPI('kpi')
         kpi.usersIds = [event.params.user]
         kpi.totalUsers = BigInt.fromI32(1)
         kpi.totalContributed = event.params.amount
         kpi.totalActualContributed = actualContributed
-        kpi.totalEarned = event.params.referral
+        kpi.totalEarned = BigInt.zero() // because first bid is always root
         kpi.totalLottery = event.params.lottery
         kpi.totalToOwner = event.params.toOwner
         kpi.totalToMarketing = event.params.marketing
@@ -118,7 +116,7 @@ export function handleContributed(event: Contributed): void {
         kpi.save()
     } else {
         let userIds = kpi.usersIds
-        if (userIds.indexOf(event.params.user) === -1) {
+        if (userIds.indexOf(event.params.user) == -1) {
             userIds.push(event.params.user)
             kpi.usersIds = userIds
             kpi.totalUsers = kpi.totalUsers.plus(BigInt.fromI32(1))
@@ -127,9 +125,10 @@ export function handleContributed(event: Contributed): void {
         kpi.totalContributed = kpi.totalContributed.plus(event.params.amount)
         kpi.totalActualContributed = kpi.totalActualContributed.plus(actualContributed)
 
-        if (event.params.refadr !== Address.fromString(zeroAddress)) {
+        if (event.params.refadr.notEqual(Address.zero())) {
             kpi.totalEarned = kpi.totalEarned.plus(event.params.referral)
         }
+
         kpi.totalLottery = kpi.totalLottery.plus(event.params.lottery)
         kpi.totalToOwner = kpi.totalToOwner.plus(event.params.toOwner)
         kpi.totalToMarketing = kpi.totalToMarketing.plus(event.params.marketing)
@@ -147,14 +146,14 @@ export function handleOffset(event: Offset): void {
     offset.fromBank = event.params.price
 
     let kpi = schema.KPI.load('kpi')
-    if (kpi !== null) {
+    if (kpi != null) {
         kpi.totalFromFund = kpi.totalFromFund.plus(event.params.price)
         kpi.totalRefunded = kpi.totalRefunded.plus(event.params.amount)
         kpi.save()
     }
 
     let user = schema.User.load(event.params.user)
-    if (user !== null) {
+    if (user != null) {
         let bidId = user.bidsIds[event.params.number.toI32()]
         if (bidId) {
             offset.bidId = bidId
@@ -162,7 +161,7 @@ export function handleOffset(event: Offset): void {
             offset.bidId = Bytes.empty()
         }
         let bid = schema.Contribution.load(bidId)
-        if (bid !== null) {
+        if (bid != null) {
             bid.refunded = true
             bid.save()
         }
@@ -197,7 +196,7 @@ export function handleLottery(event: Lottery): void {
     }
 
     let kpi = schema.KPI.load('kpi')
-    if (kpi !== null) {
+    if (kpi != null) {
         kpi.totalWon = kpi.totalWon.plus(event.params.bank)
         kpi.save()
     }
