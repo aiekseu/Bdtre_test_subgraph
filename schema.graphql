@@ -14,6 +14,7 @@ type Contribution @entity {
   links: BigInt!
   linksLeft: BigInt!
   refunded: Boolean!
+  btcRate: BigInt!
 }
 
 type Refund @entity(immutable: true) {

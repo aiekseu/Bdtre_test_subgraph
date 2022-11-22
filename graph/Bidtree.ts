@@ -21,6 +21,7 @@ export function handleContributed(event: Contributed): void {
     contribute.discount = event.params.refund
     contribute.contributor = event.params.user
     contribute.refunded = false
+    contribute.btcRate = event.params.BtcRate
     contribute.save()
 
     // get future lottery instance

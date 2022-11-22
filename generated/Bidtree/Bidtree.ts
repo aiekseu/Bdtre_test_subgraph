@@ -58,6 +58,10 @@ export class Contributed__Params {
   get refund(): BigInt {
     return this._event.parameters[8].value.toBigInt();
   }
+
+  get BtcRate(): BigInt {
+    return this._event.parameters[9].value.toBigInt();
+  }
 }
 
 export class Lottery extends ethereum.Event {

@@ -169,6 +169,15 @@ export class Contribution extends Entity {
   set refunded(value: boolean) {
     this.set("refunded", Value.fromBoolean(value));
   }
+
+  get btcRate(): BigInt {
+    let value = this.get("btcRate");
+    return value!.toBigInt();
+  }
+
+  set btcRate(value: BigInt) {
+    this.set("btcRate", Value.fromBigInt(value));
+  }
 }
 
 export class Refund extends Entity {
