@@ -31,36 +31,40 @@ export class Contributed__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get amount(): BigInt {
+  get refBidNum(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
-  get referral(): BigInt {
+  get amount(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
 
-  get fund(): BigInt {
+  get referral(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
 
-  get lottery(): BigInt {
+  get fund(): BigInt {
     return this._event.parameters[5].value.toBigInt();
   }
 
-  get marketing(): BigInt {
+  get btcRate(): BigInt {
     return this._event.parameters[6].value.toBigInt();
   }
 
-  get toOwner(): BigInt {
+  get lottery(): BigInt {
     return this._event.parameters[7].value.toBigInt();
   }
 
-  get refund(): BigInt {
+  get marketing(): BigInt {
     return this._event.parameters[8].value.toBigInt();
   }
 
-  get BtcRate(): BigInt {
+  get toOwner(): BigInt {
     return this._event.parameters[9].value.toBigInt();
+  }
+
+  get refund(): BigInt {
+    return this._event.parameters[10].value.toBigInt();
   }
 }
 
@@ -143,16 +147,20 @@ export class OwnershipTransferred__Params {
 }
 
 export class Bidtree__getBidResultValue0Struct extends ethereum.Tuple {
-  get _amount(): BigInt {
+  get _price(): BigInt {
     return this[0].toBigInt();
   }
 
-  get _price(): BigInt {
+  get _share_found(): BigInt {
     return this[1].toBigInt();
   }
 
-  get _returned(): boolean {
-    return this[2].toBoolean();
+  get _res_price(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get _referrals(): BigInt {
+    return this[3].toBigInt();
   }
 }
 
@@ -161,44 +169,30 @@ export class Bidtree extends ethereum.SmartContract {
     return new Bidtree("Bidtree", address);
   }
 
-  getActiveReferrals(account: Address): BigInt {
+  getActiveReferrals(account: Address, bid: BigInt): BigInt {
     let result = super.call(
       "getActiveReferrals",
-      "getActiveReferrals(address):(uint256)",
-      [ethereum.Value.fromAddress(account)]
+      "getActiveReferrals(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(account),
+        ethereum.Value.fromUnsignedBigInt(bid)
+      ]
     );
 
     return result[0].toBigInt();
   }
 
-  try_getActiveReferrals(account: Address): ethereum.CallResult<BigInt> {
+  try_getActiveReferrals(
+    account: Address,
+    bid: BigInt
+  ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getActiveReferrals",
-      "getActiveReferrals(address):(uint256)",
-      [ethereum.Value.fromAddress(account)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  getAmountContributions(account: Address): BigInt {
-    let result = super.call(
-      "getAmountContributions",
-      "getAmountContributions(address):(uint256)",
-      [ethereum.Value.fromAddress(account)]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_getAmountContributions(account: Address): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getAmountContributions",
-      "getAmountContributions(address):(uint256)",
-      [ethereum.Value.fromAddress(account)]
+      "getActiveReferrals(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(account),
+        ethereum.Value.fromUnsignedBigInt(bid)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -218,29 +212,6 @@ export class Bidtree extends ethereum.SmartContract {
       "getAmountFund",
       "getAmountFund():(uint256)",
       []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  getAmountIncome(account: Address): BigInt {
-    let result = super.call(
-      "getAmountIncome",
-      "getAmountIncome(address):(uint256)",
-      [ethereum.Value.fromAddress(account)]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_getAmountIncome(account: Address): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getAmountIncome",
-      "getAmountIncome(address):(uint256)",
-      [ethereum.Value.fromAddress(account)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -317,7 +288,7 @@ export class Bidtree extends ethereum.SmartContract {
   getBid(account: Address, num: BigInt): Bidtree__getBidResultValue0Struct {
     let result = super.call(
       "getBid",
-      "getBid(address,uint256):((uint128,uint128,bool))",
+      "getBid(address,uint256):((uint128,uint128,uint128,uint128))",
       [
         ethereum.Value.fromAddress(account),
         ethereum.Value.fromUnsignedBigInt(num)
@@ -333,7 +304,7 @@ export class Bidtree extends ethereum.SmartContract {
   ): ethereum.CallResult<Bidtree__getBidResultValue0Struct> {
     let result = super.tryCall(
       "getBid",
-      "getBid(address,uint256):((uint128,uint128,bool))",
+      "getBid(address,uint256):((uint128,uint128,uint128,uint128))",
       [
         ethereum.Value.fromAddress(account),
         ethereum.Value.fromUnsignedBigInt(num)
@@ -635,35 +606,35 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[1].value.toAddress();
   }
 
-  get multiplier(): BigInt {
+  get waitingTime(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
   }
 
-  get waitingTime(): BigInt {
+  get depositAmount(): BigInt {
     return this._call.inputValues[3].value.toBigInt();
   }
 
-  get depositAmount(): BigInt {
+  get percentageOwner(): BigInt {
     return this._call.inputValues[4].value.toBigInt();
   }
 
-  get percentageOwner(): BigInt {
+  get percentageMarketing(): BigInt {
     return this._call.inputValues[5].value.toBigInt();
   }
 
-  get percentageMarketing(): BigInt {
+  get percentageLottery(): BigInt {
     return this._call.inputValues[6].value.toBigInt();
   }
 
-  get percentageLottery(): BigInt {
+  get percentageReferral(): BigInt {
     return this._call.inputValues[7].value.toBigInt();
   }
 
-  get percentageReferral(): BigInt {
+  get percentageFund(): BigInt {
     return this._call.inputValues[8].value.toBigInt();
   }
 
-  get percentageFund(): BigInt {
+  get numSales(): BigInt {
     return this._call.inputValues[9].value.toBigInt();
   }
 }
@@ -703,6 +674,10 @@ export class ContributeCall__Inputs {
 
   get referral(): Address {
     return this._call.inputValues[2].value.toAddress();
+  }
+
+  get bid(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
   }
 }
 

@@ -1,6 +1,7 @@
 import { Contributed, Lottery, Offset } from '../generated/Bidtree/Bidtree'
 import * as schema from '../generated/schema'
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { handleFutureLottery } from './services/lottery-service'
 
 export function handleContributed(event: Contributed): void {
     const links = event.params.amount.div(BigInt.fromString('100000000000000000000')).plus(BigInt.fromI32(1))
@@ -9,38 +10,44 @@ export function handleContributed(event: Contributed): void {
     let contribute = new schema.Contribution(event.transaction.hash)
     contribute.timestamp = event.block.timestamp
     contribute.user = event.params.user
+    contribute.contributor = event.params.user
     contribute.referralAddress = event.params.refadr
     contribute.amount = event.params.amount
-    contribute.links = links as BigInt
-    contribute.linksLeft = links as BigInt
     contribute.toReferral = event.params.referral
     contribute.toFund = event.params.fund
     contribute.toLottery = event.params.lottery
     contribute.toMarketing = event.params.marketing
     contribute.toOwner = event.params.toOwner
     contribute.discount = event.params.refund
-    contribute.contributor = event.params.user
+    contribute.links = links as BigInt
+    contribute.linksLeft = links as BigInt
     contribute.refunded = false
-    contribute.btcRate = event.params.BtcRate
+    contribute.btcRate = event.params.btcRate
+    contribute.bidNum = event.params.refBidNum
     contribute.save()
 
-    // get future lottery instance
-    let lottery = schema.FutureLottery.load('future-lottery')
-
-    // increase lottery bank and add user as participant
-    if (lottery == null) {
-        lottery = new schema.FutureLottery('future-lottery')
-        lottery.bank = event.params.lottery
-        lottery.linksBank = links
-        lottery.participantIds = [event.params.user]
-    } else {
-        lottery.bank = lottery.bank.plus(event.params.lottery)
-        lottery.linksBank = lottery.linksBank.plus(links)
-        let pIDs = lottery.participantIds
-        pIDs.push(event.params.user)
-        lottery.participantIds = pIDs
-    }
-    lottery.save()
+    handleFutureLottery(
+        event.params.lottery, // contribution
+        links, // linksAmount
+        event.params.user, // user
+    )
+    // // get future lottery instance
+    // let lottery = schema.FutureLottery.load('future-lottery')
+    //
+    // // increase lottery bank and add user as participant
+    // if (lottery == null) {
+    //     lottery = new schema.FutureLottery('future-lottery')
+    //     lottery.bank = event.params.lottery
+    //     lottery.linksBank = links
+    //     lottery.participantIds = [event.params.user]
+    // } else {
+    //     lottery.bank = lottery.bank.plus(event.params.lottery)
+    //     lottery.linksBank = lottery.linksBank.plus(links)
+    //     let pIDs = lottery.participantIds
+    //     pIDs.push(event.params.user)
+    //     lottery.participantIds = pIDs
+    // }
+    // lottery.save()
 
     // add new user or incresase contributed if already participated
     let user = schema.User.load(event.params.user)
