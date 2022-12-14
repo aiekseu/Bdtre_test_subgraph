@@ -3,19 +3,20 @@ type Contribution @entity {
   timestamp: BigInt!
   user: Bytes!
   contributor: User!
+  bidNum: BigInt!
   referralAddress: Bytes!
-  amount: BigInt!
-  toReferral: BigInt!
-  toFund: BigInt!
-  toLottery: BigInt!
-  toMarketing: BigInt!
-  toOwner: BigInt!
-  discount: BigInt!
+  referralBidNum: BigInt!
+  cost: BigInt!
+  cashback: BigInt!
+  actualCost: BigInt!
+  forSale: Boolean!
   links: BigInt!
   linksLeft: BigInt!
-  refunded: Boolean!
+  toReferral: BigInt!
+  toLottery: BigInt!
+  toFund: BigInt!
   btcRate: BigInt!
-  bidNum: BigInt!
+  refunded: Boolean!
 }
 
 type Refund @entity(immutable: true) {
@@ -64,13 +65,13 @@ type KPI @entity {
     usersIds: [Bytes!]!
     totalUsers: BigInt!
     totalContributed: BigInt!
+    totalCashback: BigInt!
     totalActualContributed: BigInt!
     totalEarned: BigInt!
     totalLottery: BigInt!
     totalWon: BigInt!
-    totalToOwner: BigInt!
-    totalToMarketing: BigInt!
     totalToFund: BigInt!
     totalFromFund: BigInt!
     totalRefunded: BigInt!
+    totalDiscounts: BigInt!
 }

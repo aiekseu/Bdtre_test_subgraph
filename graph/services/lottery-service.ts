@@ -2,18 +2,15 @@ import { BigInt, Bytes } from '@graphprotocol/graph-ts'
 import * as schema from '../../generated/schema'
 
 
-export function handleFutureLottery(
+export function updateFutureLottery(
     contribution: BigInt,
     linksAmount: BigInt,
     user: Bytes,
 ): void {
 
-    // get future lottery instance
     let lottery = schema.FutureLottery.load('future-lottery')
 
-    // increase lottery bank and add user as participant
-    if (lottery == null
-    ) {
+    if (lottery == null) {
         lottery = new schema.FutureLottery('future-lottery')
         lottery.bank = contribution
         lottery.linksBank = linksAmount
@@ -22,8 +19,10 @@ export function handleFutureLottery(
         lottery.bank = lottery.bank.plus(contribution)
         lottery.linksBank = lottery.linksBank.plus(linksAmount)
         let pIDs = lottery.participantIds
-        pIDs.push(user)
-        lottery.participantIds = pIDs
+        if (pIDs.indexOf(user) == -1) {
+            pIDs.push(user)
+            lottery.participantIds = pIDs
+        }
     }
     lottery.save()
 }

@@ -6,9 +6,9 @@ dataSources:
     name: Bidtree
     network: mumbai
     source:
-      address: "0xb5A86c3D4D94Aba4C8415727B5069cfB0d614B0f"
+      address: "0x87e6a38a0558b44f07562098b72578b706a83fd8"
       abi: Bidtree
-      startBlock: 29523613
+      startBlock: 29638835
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -19,7 +19,7 @@ dataSources:
         - name: Bidtree
           file: ./abi/Bidtree.json
       eventHandlers:
-        - event: Contributed(address,address,uint256,uint256,uint256,uint256,uint128,uint256,uint256,uint256,uint256)
+        - event: Contributed(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint128)
           handler: handleContributed
         - event: Offset(address,uint256,uint256,uint256)
           handler: handleOffset

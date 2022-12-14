@@ -39,15 +39,15 @@ export class Contributed__Params {
     return this._event.parameters[3].value.toBigInt();
   }
 
-  get referral(): BigInt {
+  get refund(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
 
-  get fund(): BigInt {
+  get links(): BigInt {
     return this._event.parameters[5].value.toBigInt();
   }
 
-  get btcRate(): BigInt {
+  get referral(): BigInt {
     return this._event.parameters[6].value.toBigInt();
   }
 
@@ -55,16 +55,12 @@ export class Contributed__Params {
     return this._event.parameters[7].value.toBigInt();
   }
 
-  get marketing(): BigInt {
+  get fund(): BigInt {
     return this._event.parameters[8].value.toBigInt();
   }
 
-  get toOwner(): BigInt {
+  get btcRate(): BigInt {
     return this._event.parameters[9].value.toBigInt();
-  }
-
-  get refund(): BigInt {
-    return this._event.parameters[10].value.toBigInt();
   }
 }
 
@@ -161,6 +157,10 @@ export class Bidtree__getBidResultValue0Struct extends ethereum.Tuple {
 
   get _referrals(): BigInt {
     return this[3].toBigInt();
+  }
+
+  get _referrals_closed(): BigInt {
+    return this[4].toBigInt();
   }
 }
 
@@ -288,7 +288,7 @@ export class Bidtree extends ethereum.SmartContract {
   getBid(account: Address, num: BigInt): Bidtree__getBidResultValue0Struct {
     let result = super.call(
       "getBid",
-      "getBid(address,uint256):((uint128,uint128,uint128,uint128))",
+      "getBid(address,uint256):((uint128,uint128,uint128,uint128,uint128))",
       [
         ethereum.Value.fromAddress(account),
         ethereum.Value.fromUnsignedBigInt(num)
@@ -304,7 +304,7 @@ export class Bidtree extends ethereum.SmartContract {
   ): ethereum.CallResult<Bidtree__getBidResultValue0Struct> {
     let result = super.tryCall(
       "getBid",
-      "getBid(address,uint256):((uint128,uint128,uint128,uint128))",
+      "getBid(address,uint256):((uint128,uint128,uint128,uint128,uint128))",
       [
         ethereum.Value.fromAddress(account),
         ethereum.Value.fromUnsignedBigInt(num)
@@ -399,6 +399,21 @@ export class Bidtree extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  getNumSales(): BigInt {
+    let result = super.call("getNumSales", "getNumSales():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_getNumSales(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("getNumSales", "getNumSales():(uint256)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   getPercentageFund(): BigInt {

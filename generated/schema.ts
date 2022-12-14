@@ -71,6 +71,15 @@ export class Contribution extends Entity {
     this.set("contributor", Value.fromBytes(value));
   }
 
+  get bidNum(): BigInt {
+    let value = this.get("bidNum");
+    return value!.toBigInt();
+  }
+
+  set bidNum(value: BigInt) {
+    this.set("bidNum", Value.fromBigInt(value));
+  }
+
   get referralAddress(): Bytes {
     let value = this.get("referralAddress");
     return value!.toBytes();
@@ -80,67 +89,49 @@ export class Contribution extends Entity {
     this.set("referralAddress", Value.fromBytes(value));
   }
 
-  get amount(): BigInt {
-    let value = this.get("amount");
+  get referralBidNum(): BigInt {
+    let value = this.get("referralBidNum");
     return value!.toBigInt();
   }
 
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
+  set referralBidNum(value: BigInt) {
+    this.set("referralBidNum", Value.fromBigInt(value));
   }
 
-  get toReferral(): BigInt {
-    let value = this.get("toReferral");
+  get cost(): BigInt {
+    let value = this.get("cost");
     return value!.toBigInt();
   }
 
-  set toReferral(value: BigInt) {
-    this.set("toReferral", Value.fromBigInt(value));
+  set cost(value: BigInt) {
+    this.set("cost", Value.fromBigInt(value));
   }
 
-  get toFund(): BigInt {
-    let value = this.get("toFund");
+  get cashback(): BigInt {
+    let value = this.get("cashback");
     return value!.toBigInt();
   }
 
-  set toFund(value: BigInt) {
-    this.set("toFund", Value.fromBigInt(value));
+  set cashback(value: BigInt) {
+    this.set("cashback", Value.fromBigInt(value));
   }
 
-  get toLottery(): BigInt {
-    let value = this.get("toLottery");
+  get actualCost(): BigInt {
+    let value = this.get("actualCost");
     return value!.toBigInt();
   }
 
-  set toLottery(value: BigInt) {
-    this.set("toLottery", Value.fromBigInt(value));
+  set actualCost(value: BigInt) {
+    this.set("actualCost", Value.fromBigInt(value));
   }
 
-  get toMarketing(): BigInt {
-    let value = this.get("toMarketing");
-    return value!.toBigInt();
+  get forSale(): boolean {
+    let value = this.get("forSale");
+    return value!.toBoolean();
   }
 
-  set toMarketing(value: BigInt) {
-    this.set("toMarketing", Value.fromBigInt(value));
-  }
-
-  get toOwner(): BigInt {
-    let value = this.get("toOwner");
-    return value!.toBigInt();
-  }
-
-  set toOwner(value: BigInt) {
-    this.set("toOwner", Value.fromBigInt(value));
-  }
-
-  get discount(): BigInt {
-    let value = this.get("discount");
-    return value!.toBigInt();
-  }
-
-  set discount(value: BigInt) {
-    this.set("discount", Value.fromBigInt(value));
+  set forSale(value: boolean) {
+    this.set("forSale", Value.fromBoolean(value));
   }
 
   get links(): BigInt {
@@ -161,13 +152,31 @@ export class Contribution extends Entity {
     this.set("linksLeft", Value.fromBigInt(value));
   }
 
-  get refunded(): boolean {
-    let value = this.get("refunded");
-    return value!.toBoolean();
+  get toReferral(): BigInt {
+    let value = this.get("toReferral");
+    return value!.toBigInt();
   }
 
-  set refunded(value: boolean) {
-    this.set("refunded", Value.fromBoolean(value));
+  set toReferral(value: BigInt) {
+    this.set("toReferral", Value.fromBigInt(value));
+  }
+
+  get toLottery(): BigInt {
+    let value = this.get("toLottery");
+    return value!.toBigInt();
+  }
+
+  set toLottery(value: BigInt) {
+    this.set("toLottery", Value.fromBigInt(value));
+  }
+
+  get toFund(): BigInt {
+    let value = this.get("toFund");
+    return value!.toBigInt();
+  }
+
+  set toFund(value: BigInt) {
+    this.set("toFund", Value.fromBigInt(value));
   }
 
   get btcRate(): BigInt {
@@ -179,13 +188,13 @@ export class Contribution extends Entity {
     this.set("btcRate", Value.fromBigInt(value));
   }
 
-  get bidNum(): BigInt {
-    let value = this.get("bidNum");
-    return value!.toBigInt();
+  get refunded(): boolean {
+    let value = this.get("refunded");
+    return value!.toBoolean();
   }
 
-  set bidNum(value: BigInt) {
-    this.set("bidNum", Value.fromBigInt(value));
+  set refunded(value: boolean) {
+    this.set("refunded", Value.fromBoolean(value));
   }
 }
 
@@ -600,6 +609,15 @@ export class KPI extends Entity {
     this.set("totalContributed", Value.fromBigInt(value));
   }
 
+  get totalCashback(): BigInt {
+    let value = this.get("totalCashback");
+    return value!.toBigInt();
+  }
+
+  set totalCashback(value: BigInt) {
+    this.set("totalCashback", Value.fromBigInt(value));
+  }
+
   get totalActualContributed(): BigInt {
     let value = this.get("totalActualContributed");
     return value!.toBigInt();
@@ -636,24 +654,6 @@ export class KPI extends Entity {
     this.set("totalWon", Value.fromBigInt(value));
   }
 
-  get totalToOwner(): BigInt {
-    let value = this.get("totalToOwner");
-    return value!.toBigInt();
-  }
-
-  set totalToOwner(value: BigInt) {
-    this.set("totalToOwner", Value.fromBigInt(value));
-  }
-
-  get totalToMarketing(): BigInt {
-    let value = this.get("totalToMarketing");
-    return value!.toBigInt();
-  }
-
-  set totalToMarketing(value: BigInt) {
-    this.set("totalToMarketing", Value.fromBigInt(value));
-  }
-
   get totalToFund(): BigInt {
     let value = this.get("totalToFund");
     return value!.toBigInt();
@@ -679,5 +679,14 @@ export class KPI extends Entity {
 
   set totalRefunded(value: BigInt) {
     this.set("totalRefunded", Value.fromBigInt(value));
+  }
+
+  get totalDiscounts(): BigInt {
+    let value = this.get("totalDiscounts");
+    return value!.toBigInt();
+  }
+
+  set totalDiscounts(value: BigInt) {
+    this.set("totalDiscounts", Value.fromBigInt(value));
   }
 }
