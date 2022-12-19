@@ -75,6 +75,7 @@ export function handleContributed(event: Contributed): void {
         actualCost,
         toLottery,
         bidId,
+        gifted
     )
 
     // get referral if exists
