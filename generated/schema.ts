@@ -196,6 +196,15 @@ export class Contribution extends Entity {
   set refunded(value: boolean) {
     this.set("refunded", Value.fromBoolean(value));
   }
+
+  get gifted(): boolean {
+    let value = this.get("gifted");
+    return value!.toBoolean();
+  }
+
+  set gifted(value: boolean) {
+    this.set("gifted", Value.fromBoolean(value));
+  }
 }
 
 export class Refund extends Entity {
@@ -627,6 +636,15 @@ export class KPI extends Entity {
     this.set("totalActualContributed", Value.fromBigInt(value));
   }
 
+  get totalLinksCreated(): BigInt {
+    let value = this.get("totalLinksCreated");
+    return value!.toBigInt();
+  }
+
+  set totalLinksCreated(value: BigInt) {
+    this.set("totalLinksCreated", Value.fromBigInt(value));
+  }
+
   get totalEarned(): BigInt {
     let value = this.get("totalEarned");
     return value!.toBigInt();
@@ -688,5 +706,14 @@ export class KPI extends Entity {
 
   set totalDiscounts(value: BigInt) {
     this.set("totalDiscounts", Value.fromBigInt(value));
+  }
+
+  get totalLinksGifted(): BigInt {
+    let value = this.get("totalLinksGifted");
+    return value!.toBigInt();
+  }
+
+  set totalLinksGifted(value: BigInt) {
+    this.set("totalLinksGifted", Value.fromBigInt(value));
   }
 }

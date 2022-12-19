@@ -17,6 +17,7 @@ type Contribution @entity {
   toFund: BigInt!
   btcRate: BigInt!
   refunded: Boolean!
+  gifted: Boolean!
 }
 
 type Refund @entity(immutable: true) {
@@ -67,6 +68,7 @@ type KPI @entity {
     totalContributed: BigInt!
     totalCashback: BigInt!
     totalActualContributed: BigInt!
+    totalLinksCreated: BigInt!
     totalEarned: BigInt!
     totalLottery: BigInt!
     totalWon: BigInt!
@@ -74,4 +76,5 @@ type KPI @entity {
     totalFromFund: BigInt!
     totalRefunded: BigInt!
     totalDiscounts: BigInt!
+    totalLinksGifted: BigInt!
 }

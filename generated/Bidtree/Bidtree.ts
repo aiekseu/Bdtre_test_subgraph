@@ -162,6 +162,10 @@ export class Bidtree__getBidResultValue0Struct extends ethereum.Tuple {
   get _referrals_closed(): BigInt {
     return this[4].toBigInt();
   }
+
+  get _gifted(): boolean {
+    return this[5].toBoolean();
+  }
 }
 
 export class Bidtree extends ethereum.SmartContract {
@@ -288,7 +292,7 @@ export class Bidtree extends ethereum.SmartContract {
   getBid(account: Address, num: BigInt): Bidtree__getBidResultValue0Struct {
     let result = super.call(
       "getBid",
-      "getBid(address,uint256):((uint128,uint128,uint128,uint128,uint128))",
+      "getBid(address,uint256):((uint128,uint128,uint128,uint128,uint128,bool))",
       [
         ethereum.Value.fromAddress(account),
         ethereum.Value.fromUnsignedBigInt(num)
@@ -304,7 +308,7 @@ export class Bidtree extends ethereum.SmartContract {
   ): ethereum.CallResult<Bidtree__getBidResultValue0Struct> {
     let result = super.tryCall(
       "getBid",
-      "getBid(address,uint256):((uint128,uint128,uint128,uint128,uint128))",
+      "getBid(address,uint256):((uint128,uint128,uint128,uint128,uint128,bool))",
       [
         ethereum.Value.fromAddress(account),
         ethereum.Value.fromUnsignedBigInt(num)
@@ -726,6 +730,40 @@ export class FinalizeCall__Outputs {
   _call: FinalizeCall;
 
   constructor(call: FinalizeCall) {
+    this._call = call;
+  }
+}
+
+export class GiftContributeCall extends ethereum.Call {
+  get inputs(): GiftContributeCall__Inputs {
+    return new GiftContributeCall__Inputs(this);
+  }
+
+  get outputs(): GiftContributeCall__Outputs {
+    return new GiftContributeCall__Outputs(this);
+  }
+}
+
+export class GiftContributeCall__Inputs {
+  _call: GiftContributeCall;
+
+  constructor(call: GiftContributeCall) {
+    this._call = call;
+  }
+
+  get multi(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get recipient(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class GiftContributeCall__Outputs {
+  _call: GiftContributeCall;
+
+  constructor(call: GiftContributeCall) {
     this._call = call;
   }
 }

@@ -9,11 +9,13 @@ export function updateKpi(
     contributed: BigInt,
     actualContributed: BigInt,
     cashback: BigInt,
+    links: BigInt,
     toReferral: BigInt,
     toLottery: BigInt,
     toFund: BigInt,
     referralAddress: Bytes,
-    forSale: boolean
+    forSale: boolean,
+    gifted: boolean,
 ): void {
     // increase KPIs or initialize
     let kpi = schema.KPI.load('kpi')
@@ -31,6 +33,13 @@ export function updateKpi(
         kpi.totalWon = BigInt.zero()
         kpi.totalCashback = cashback
         kpi.totalDiscounts = BigInt.fromI32(1)
+        if (gifted == true) {
+            kpi.totalLinksGifted = BigInt.fromI32(1)
+            kpi.totalLinksCreated = BigInt.zero()
+        } else {
+            kpi.totalLinksGifted = BigInt.zero()
+            kpi.totalLinksCreated = links
+        }
         kpi.save()
     } else {
         let userIds = kpi.usersIds
@@ -49,6 +58,12 @@ export function updateKpi(
 
         if (referralAddress.notEqual(Address.zero())) {
             kpi.totalEarned = kpi.totalEarned.plus(toReferral)
+        }
+
+        if (gifted == true) {
+            kpi.totalLinksGifted = kpi.totalLinksGifted.plus(links)
+        } else {
+            kpi.totalLinksCreated = kpi.totalLinksCreated.plus(links)
         }
 
         kpi.totalLottery = kpi.totalLottery.plus(toLottery)

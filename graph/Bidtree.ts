@@ -23,6 +23,10 @@ export function handleContributed(event: Contributed): void {
     const toFund = event.params.fund
     const btcRate = event.params.btcRate
     let forSale = false
+    let gifted = false
+    if (cost == BigInt.zero()) {
+        gifted = true
+    }
 
     let kpi = schema.KPI.load('kpi')
     // if this is first bid || there is no referral and discounts haven't ended.
@@ -50,14 +54,18 @@ export function handleContributed(event: Contributed): void {
     contribute.btcRate = btcRate
     contribute.refunded = false
     contribute.forSale = forSale
+    contribute.gifted = gifted
     contribute.save()
 
     // increase future lottery bank and add user as participant
-    updateFutureLottery(
-        toLottery,
-        links,
-        contributorAddress,
-    )
+    if (gifted == false) {
+        updateFutureLottery(
+            toLottery,
+            links,
+            contributorAddress,
+        )
+
+    }
 
     // add new user or update current if already existed
     updateUser(
@@ -81,7 +89,7 @@ export function handleContributed(event: Contributed): void {
 
             // get referral bid
             const refBidsIds = referral.bidsIds
-            const bid = schema.Contribution.load(refBidsIds[referralBidNum.toI32()]) // TODO: mb error here
+            const bid = schema.Contribution.load(refBidsIds[referralBidNum.toI32()])
             if (bid != null) {
                 bid.linksLeft = bid.linksLeft.minus(BigInt.fromI32(1))
                 bid.save()
@@ -95,11 +103,13 @@ export function handleContributed(event: Contributed): void {
         cost,
         actualCost,
         cashback,
+        links,
         toReferral,
         toLottery,
         toFund,
         referralAddress,
         forSale,
+        gifted
     )
 }
 

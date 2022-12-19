@@ -6,9 +6,9 @@ dataSources:
     name: Bidtree
     network: mumbai
     source:
-      address: "0x87e6a38a0558b44f07562098b72578b706a83fd8"
+      address: "0xffF07F44DD5F17E962a3327677710aab054bdeEd"
       abi: Bidtree
-      startBlock: 29638835
+      startBlock: 29763639
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
