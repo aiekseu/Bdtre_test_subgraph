@@ -3,12 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Bidtree
-    network: mumbai
+    name: CoffeeShop
+    network: bsc
     source:
-      address: "0xffF07F44DD5F17E962a3327677710aab054bdeEd"
+      address: "0x8c1B8376BFfb76ab1cD885619021B685bE026a81"
       abi: Bidtree
-      startBlock: 29763639
+      startBlock: 24120878
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -19,9 +19,9 @@ dataSources:
         - name: Bidtree
           file: ./abi/Bidtree.json
       eventHandlers:
-        - event: Contributed(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint128)
+        - event: Coffeed(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint128)
           handler: handleContributed
-        - event: Offset(address,uint256,uint256,uint256)
+        - event: Widthdraw(address,uint256,uint256,uint256)
           handler: handleOffset
         - event: Lottery(uint256,address,uint256)
           handler: handleLottery
