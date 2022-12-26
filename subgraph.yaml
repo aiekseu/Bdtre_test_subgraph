@@ -6,9 +6,9 @@ dataSources:
     name: Bidtree
     network: bsc
     source:
-      address: "0xffF07F44DD5F17E962a3327677710aa***"
+      address: "0x07b17771E2721D59de25f5fe5A345226F3171CDe"
       abi: Bidtree
-      startBlock: 297636**
+      startBlock: 24246041
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
