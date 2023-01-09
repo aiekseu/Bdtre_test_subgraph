@@ -32,7 +32,7 @@ export function handleContributed(event: Contributed): void {
     // if this is first bid || there is no referral and discounts haven't ended.
     if (kpi == null ||
         (kpi.totalDiscounts.lt(BigInt.fromI32(TOTAL_DISCOUNTS)) &&
-            referralAddress.equals(Address.zero()))) {
+            referralAddress.equals(Address.zero())) && !gifted) {
         forSale = true
     }
 
