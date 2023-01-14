@@ -147,15 +147,15 @@ export class Bidtree__getBidResultValue0Struct extends ethereum.Tuple {
     return this[0].toBigInt();
   }
 
-  get _share_found(): BigInt {
+  get _to_fund(): BigInt {
     return this[1].toBigInt();
   }
 
-  get _res_price(): BigInt {
+  get _btc_rate(): BigInt {
     return this[2].toBigInt();
   }
 
-  get _referrals(): BigInt {
+  get _referrals_left(): BigInt {
     return this[3].toBigInt();
   }
 
@@ -653,7 +653,7 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[8].value.toBigInt();
   }
 
-  get numSales(): BigInt {
+  get numDiscounts(): BigInt {
     return this._call.inputValues[9].value.toBigInt();
   }
 }
@@ -1086,32 +1086,6 @@ export class TransferOwnershipCall__Outputs {
   _call: TransferOwnershipCall;
 
   constructor(call: TransferOwnershipCall) {
-    this._call = call;
-  }
-}
-
-export class UpdateRandomNumCall extends ethereum.Call {
-  get inputs(): UpdateRandomNumCall__Inputs {
-    return new UpdateRandomNumCall__Inputs(this);
-  }
-
-  get outputs(): UpdateRandomNumCall__Outputs {
-    return new UpdateRandomNumCall__Outputs(this);
-  }
-}
-
-export class UpdateRandomNumCall__Inputs {
-  _call: UpdateRandomNumCall;
-
-  constructor(call: UpdateRandomNumCall) {
-    this._call = call;
-  }
-}
-
-export class UpdateRandomNumCall__Outputs {
-  _call: UpdateRandomNumCall;
-
-  constructor(call: UpdateRandomNumCall) {
     this._call = call;
   }
 }
