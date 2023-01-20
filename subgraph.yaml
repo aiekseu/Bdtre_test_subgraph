@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Bidtree
-    network: bsc
+    network: chapel
     source:
-      address: "0x8834202401FC93Bc9E11E0d7d7Ec32be2673a6ab"
+      address: "0x239B22aAf65FF9C0cb1b969AFFd7694792CbfBEb"
       abi: Bidtree
-      startBlock: 26335465
+      startBlock: 26508008
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
