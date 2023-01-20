@@ -6,9 +6,9 @@ dataSources:
     name: Bidtree
     network: chapel
     source:
-      address: "0x239B22aAf65FF9C0cb1b969AFFd7694792CbfBEb"
+      address: "0x8249fA802D4D6858271131F28676B3882e6D8c0d"
       abi: Bidtree
-      startBlock: 26508008
+      startBlock: 26511483
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
